@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mediocrity</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="cards.css">
+    <link href="https://fonts.googleapis.com/css2?family=Piedra&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+    <script src="sketch.js"></script>
+    <script src="game.js"></script>
+    <script src="buttonLogic.js"></script>
+    <script src="stateLogic.js"></script>
+    <script src="background.js"></script>
+    <script src="particle.js"></script>
+    <script src="util.js"></script>
+</head>
+
+<body>
+
+    <div style="position: absolute;
+    left: 100px;
+    top: 200px;">
+        <p id="server-msg"></p>
+    </div>
+    <div id="game-background">
+        <div id="game-background-red-card">
+            <h1 id="game-background-red-card-number">5</h1>
+            <h1 id="game-background-red-card-status">Winner!</h1>
+            <p id="player1"></p>
+        </div>
+        <div id="game-background-blue-card">
+            <h1 id="game-background-blue-card-number">3</h1>
+            <h1 id="game-background-blue-card-status">Winner!</h1>
+            <p id="player3"></p>
+        </div>
+        <div id="game-background-green-card">
+            <h1 id="game-background-green-card-number">4</h1>
+            <h1 id="game-background-green-card-status">Winner!</h1>
+            <p id="player2"></p>
+        </div>
+        <!-- <p>The card with a number that's in . If equal use above rule!</p> -->
+    </div>
+    <div class="game-element" id="mainGame">
+        <button class="game-element" id="onlineGameButton">Online</button>
+        </br>
+        <button class="game-element" id="customGameButton">Custom</button>
+        </br>
+        </br>
+        </br>
+        </br>
+        </br>
+        </br>
+        <input style="font-size:3rem;" autocomplete="off" id="playerNameInput" value="playerName">
+        <!-- </br>
+        <button id="helpButton">Help</button> -->
+    </div>
+    <div class="game-element" id="onlineGameLobby">
+        <h1>Waiting for players</h1>
+        <p id="game-starting-text"></p>
+    </div>
+    <div class="game-element" id="customGameLobby">
+        <h1>Waiting for players</h1>
+        <button class="game-element" style="margin-top:70%;" id="startCustomGameButton">Play</button>
+        <h1 id="lobbyCode">ABCDE</h1>
+    </div>
+    <div class="game-element" id="customGameRoom">
+        <input class="game-element" style="width:120%;opacity:0.0;z-index:0;" type="submit" value="Create"
+            id="createCustomGameButton">
+        </br>
+        <button class="game-element" style="opacity:0.0;z-index:0;" id="joinCustomGameButton">Join</button>
+    </div>
+    <div class="game-element" id="joinGameCode">
+        <input class="game-element" autocomplete="off" id="joinGameCodeInput"></br><button
+            id="joinGameCodeSubmit">-></button>
+    </div>
+    <!-- <div id="helpScreen">
+
+    </div> -->
+    <div class="game-element" id="back">
+        <button class="game-element" style="opacity: 0.0;" id="backButton" style="font-size:3rem;">Back</button>
+    </div>
+    <div id="game-elements">
+        <div id="round-complete">
+
+        </div>
+        <div id="current-player">
+            <p id="current-player-name">playerName</p>
+            <div id="current-player-cards">
+                <div class="current-player-cards" id="current-player-card-1">
+                    <p class="current-player-card-numbers" id="current-player-card-1-number">1</p>
+                </div>
+                <div class="current-player-cards" id="current-player-card-2">
+                    <p class="current-player-card-numbers" id="current-player-card-2-number">2</p>
+                </div>
+                <div class="current-player-cards" id="current-player-card-3">
+                    <p class="current-player-card-numbers" id="current-player-card-3-number">3</p>
+                </div>
+                <div class="current-player-cards" id="current-player-card-4">
+                    <p class="current-player-card-numbers" id="current-player-card-4-number">4</p>
+                </div>
+                <div class="current-player-cards" id="current-player-card-5">
+                    <p class="current-player-card-numbers" id="current-player-card-5-number">5</p>
+                </div>
+            </div>
+            <div class="current-player-stats">
+                <p id="current-player-hands-won">
+                    Hands Won: 0
+                </p>
+                <p id="current-player-rounds-won">
+                    Rounds Won: 0
+                </p>
+                <p id="current-number-rounds">
+                    Round 1 of 5
+                </p>
+            </div>
+        </div>
+        <div id="opponent-player-1">
+            <p id="opponent-player-1-name">playerName</p>
+            <div id="opponent-player-cards">
+                <div class="opponent-player-1-cards" id="opponent-player-1-card-1">
+                    <p class="opponent-player-card-numbers" id="opponent-player-1-card-1-number">-</p>
+                </div>
+                <div class="opponent-player-1-cards" id="opponent-player-1-card-2">
+                    <p class="opponent-player-card-numbers" id="opponent-player-1-card-2-number">-</p>
+                </div>
+                <div class="opponent-player-1-cards" id="opponent-player-1-card-3">
+                    <p class="opponent-player-card-numbers" id="opponent-player-1-card-3-number">-</p>
+                </div>
+                <div class="opponent-player-1-cards" id="opponent-player-1-card-4">
+                    <p class="opponent-player-card-numbers" id="opponent-player-1-card-4-number">-</p>
+                </div>
+                <div class="opponent-player-1-cards" id="opponent-player-1-card-5">
+                    <p class="opponent-player-card-numbers" id="opponent-player-1-card-5-number">-</p>
+                </div>
+            </div>
+            <div class="opponent-player-stats">
+                <p style="width:100%;" id="opponent-player-1-hands-won">
+                    Hands Won: 0
+                </p>
+                <p id="opponent-player-1-rounds-won">
+                    Rounds Won: 0
+                </p>
+            </div>
+        </div>
+        <div id="opponent-player-2">
+            <p id="opponent-player-2-name">playerName</p>
+            <div id="opponent-player-cards">
+                <div class="opponent-player-2-cards" id="opponent-player-2-card-1">
+                    <p class="opponent-player-card-numbers" id="opponent-player-2-card-1-number">-</p>
+                </div>
+                <div class="opponent-player-2-cards" id="opponent-player-2-card-2">
+                    <p class="opponent-player-card-numbers" id="opponent-player-2-card-2-number">-</p>
+                </div>
+                <div class="opponent-player-2-cards" id="opponent-player-2-card-3">
+                    <p class="opponent-player-card-numbers" id="opponent-player-2-card-3-number">-</p>
+                </div>
+                <div class="opponent-player-2-cards" id="opponent-player-2-card-4">
+                    <p class="opponent-player-card-numbers" id="opponent-player-2-card-4-number">-</p>
+                </div>
+                <div class="opponent-player-2-cards" id="opponent-player-2-card-5">
+                    <p class="opponent-player-card-numbers" id="opponent-player-2-card-5-number">-</p>
+                </div>
+            </div>
+            <div class="opponent-player-stats">
+                <p style="width:100%;" id="opponent-player-2-hands-won">
+                    Hands Won: 0
+                </p>
+                <p id="opponent-player-2-rounds-won">
+                    Rounds Won: 0
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="hand-cards">
+        <div class="hand-card" style="z-index:2;left:38vw;" id="hand-card-opponent-player-1">
+        </div>
+        <div class="hand-card" style="z-index:3;left:48vw;" id="hand-card-current-player">
+        </div>
+        <div class="hand-card" style="z-index:2;left:58vw;" id="hand-card-opponent-player-2">
+        </div>
+    </div>
+    <button id="playAgain">Play Again</button>
+    <div id="message-box" class="message-box">
+        <div class="messages">
+            <!-- <div class="message">
+                <p class="sender-name">Makarand:</p>
+                <p class="msg">Hello, how are you?</p>
+            </div>
+            <div class="message">
+                <p class="sender-name">Makarand:</p>
+                <p class="msg">Hello, how are you?</p>
+            </div>
+            <div class="message">
+                <p class="sender-name">Makarand:</p>
+                <p class="msg">Hello, how are you?</p>
+            </div>
+            <div class="message">
+                <p class="sender-name">Makarand:</p>
+                <p class="msg">Hello, how are you?</p>
+            </div>
+            <div class="message">
+                <p class="sender-name">Makarand:</p>
+                <p class="msg">Hello, how are you?</p>
+            </div>
+            <div class="message">
+                <p class="sender-name">Makarand:</p>
+                <p class="msg">Last message!!!!!!</p>
+            </div> -->
+        </div>
+
+        <div class="reply">
+            <input type="text" placeholder="Enter..." id="reply-text"></input>
+        </div>
+    </div>
+</body>
+
+</html>
