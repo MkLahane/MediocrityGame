@@ -48,7 +48,6 @@ function getColorFromType(type) {
 }
 
 function launchOnlineGame() {
-    console.log("Launching online game!!!!!");
     resetOnlineGame();
     if (PLAYER_IS_HOST) {
         SOCKET.emit("launchGameMsg", { lobbyCode: PLAYERS["player1"].lobbyCode });
@@ -97,7 +96,6 @@ function launchGame() {
 
 
 function restartGame() {
-    console.log("Restart Game!!!!!!!!!!!!!!");
     document.getElementById("playAgain").style.opacity = 0.0;
     document.getElementById("playAgain").style.pointerEvents = "none";
     if (IS_ONLINE_LOBBY) {

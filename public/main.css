@@ -375,6 +375,16 @@ button:hover, input:hover {
     z-index: 5;
     pointer-events: none;
 }
+.normal-msg {
+    position: fixed;
+    left: 100px;
+    top: 200px;
+}
+.ingame-msg {
+  position: fixed; 
+  left: 40vw; 
+  top: 200px;
+}
 
 
 

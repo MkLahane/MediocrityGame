@@ -69,7 +69,7 @@ function getEmptyPlayer(playerName, playerId) {
 }
 
 function makeConnection(connectingData) {
-    SOCKET = io();//.connect("http://localhost:3000");
+    SOCKET = io();
     if (connectingData.lobby === "onlinelobby") {
         IS_ONLINE_LOBBY = true;
     }
@@ -107,11 +107,8 @@ function makeConnection(connectingData) {
         }
     });
     SOCKET.on("newPlayerJoinedMsg", data => {
-        console.log("Player Joined!!!!!!");
         PLAYERS = data.players;
-
         for (let player in data.players) {
-            console.log(player)
             if (player.playerId === PLAYER_ID || PLAYERS[player] === null) {
                 continue;
             }
@@ -124,14 +121,12 @@ function makeConnection(connectingData) {
         if (IS_ONLINE_LOBBY) {
             if (getPlayersInLobbyCount() === 3) {
                 // SOCKET.emit("launchGameMsg", { lobbyCode: PLAYERS["player1"].lobbyCode });
-                console.log("START GAME!!!!!!!");
                 startOnlineGame();
                 //SOCKET.emit("launchGameMsg", { lobbyCode: PLAYERS["player1"].lobbyCode });
             }
         }
     });
     SOCKET.on("joiningOnGoingGameMsg", data => {
-        console.log(data);
         PLAYER_ID = data["myPlayerId"];
         PLAYER_NAME = data["myPlayerName"];
         PLAYERS = data["players"];
@@ -199,7 +194,6 @@ function makeConnection(connectingData) {
     SOCKET.on("joinedOnGoingGameMsg", newPlayer => {
         let newPlayerData = newPlayer["playerData"];
         if (newPlayer["playerId"] !== PLAYER_ID) {
-            console.log(newPlayerData);
             PLAYERS[newPlayer["playerId"]] = newPlayerData;
             if (newPlayer["playerId"] === OPPONENT_PLAYER_1_ID) {
                 if (document.getElementById("opponent-player-1").classList.contains("fadeOut")) {
@@ -218,15 +212,12 @@ function makeConnection(connectingData) {
     });
     SOCKET.on("playerExitedLobbyMsg", data => {
         // if (GAME_IS_RUNNING && IS_ONLINE_LOBBY) {
-        //     console.log(GAME_IS_RUNNING);
-        //     console.log("removed connection;;;;;;;;");
         //     removeConnection();
         //     makeButtonTransition("mainmenu");
         // }
 
         resetOnlineGame();
-        // console.log("Player exited lobby!");
-        // console.log(data);
+
         document.getElementById(data.playerExitedId).textContent = "";
         if (data["newHostPlayerId"] !== null) {
             document.getElementById(data.newHostPlayerId).innerHTML = PLAYERS[data.newHostPlayerId].playerName + "     (Host)";
@@ -256,21 +247,26 @@ function makeConnection(connectingData) {
 
     });
     SOCKET.on("launchGameMsg", data => {
-        console.log(data);
         makeButtonTransition("game");
     });
     SOCKET.on("errorMsg", data => {
-        console.log(data);
-        document.getElementById('server-msg').innerHTML = data;
+        document.getElementById("server-msg").innerHTML = data;
+        if (GAME_IS_RUNNING) {
+            document.getElementById("server-msg").classList.remove("normal-msg");
+            document.getElementById("server-msg").classList.add("ingame-msg");
+        } else {
+            if (!document.getElementById("server-msg").classList.contains("normal-msg")) {
+                document.getElementById("server-msg").classList.add("normal-msg");
+            }
+        }
         popUpMessage();
     });
     SOCKET.on("movePlayedMsg", moveData => {
-        //console.log(moveData);
+
         makeOpponentMove(moveData);
     });
     SOCKET.on("handWinnerMsg", handWinnerData => {
         let winnerId = handWinnerData["winnerId"];
-        console.log(winnerId + " won the game!!!");
         changeWinText("hands", winnerId, handWinnerData["winnerData"]["handsWon"]);
         game.currentHandWinner = winnerId;
         document.getElementById("backButton").style.pointerEvents = "none";
@@ -292,8 +288,6 @@ function makeConnection(connectingData) {
 
     });
     SOCKET.on("roundWinnerMsg", roundWinnerData => {
-        console.log("Round Winner");
-        console.log(roundWinnerData);
         document.getElementById("backButton").style.pointerEvents = "none";
         disablePlaying();
         let numberOfRoundsText = document.getElementById("current-number-rounds");
@@ -339,8 +333,6 @@ function makeConnection(connectingData) {
         }, 6000);
     });
     SOCKET.on("playersComebackToLobbyMsg", newGameData => {
-        console.log("new Game Data!!");
-        console.log(newGameData);
         let restartedData = newGameData["restartedData"];
         let newPlayersData = newGameData["newPlayersData"];
         if (restartedData["prevHostId"] === PLAYER_ID) {
@@ -380,10 +372,7 @@ function makeConnection(connectingData) {
     });
 
     SOCKET.on("getMessages", messages => {
-        console.log("getMessages..........");
-        console.log(messages);
         for (let message of messages) {
-            console.log(message);
             drawMessage(message["senderId"], message["senderName"], message["msg"]);
         }
     });

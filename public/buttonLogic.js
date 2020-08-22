@@ -104,12 +104,10 @@ class ButtonLogic {
         }
         document.getElementById("startCustomGameButton").onclick = function () {
             if (PLAYER_IS_HOST) {
-                console.log("Start game!!!!!");
                 if (getPlayersInLobbyCount() === 3) {
                     SOCKET.emit("launchGameMsg", { lobbyCode: PLAYERS["player1"].lobbyCode });
                 }
                 else {
-                    console.log("Lobby is not full yet");
                     document.getElementById('server-msg').innerHTML = 'Lobby is not full yet';
                     popUpMessage();
                 }
@@ -118,16 +116,12 @@ class ButtonLogic {
         document.getElementById("playAgain").onclick = function () {
             restartGame();
         }
-        this.stateLogic = new StateLogic();
         this.checkEvents();
     }
     checkEvents() {
 
         for (let gameButtonId of this.gameButtons) {
             document.getElementById(gameButtonId).onclick = function (e) {
-                console.log("#####");
-                // console.log(this.buttonTransitionData);
-                // console.log(gameButtonId);
                 buttonTransition(gameButtonId);
             }
         }
@@ -137,7 +131,6 @@ class ButtonLogic {
 
 
 function buttonTransition(whichButton) {
-    //console.log("Button Pressed:" + whichButton);
     if (whichButton == "backButton") {
         goBack();
     } else {
@@ -201,12 +194,10 @@ function makeButtonTransition(nextState) {
     }
 
     CURRENT_MAIN_MENU_STATE = nextState;
-    console.log(CURRENT_MAIN_MENU_STATE);
 }
 
 
 function goBack() {
-    //console.log('GO BACK!!!!!');
     if (CURRENT_MAIN_MENU_STATE === "customlobby") {
         document.getElementById("player1").innerHTML = "";
         document.getElementById("player2").innerHTML = "";
