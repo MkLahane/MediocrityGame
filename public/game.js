@@ -69,7 +69,7 @@ function getEmptyPlayer(playerName, playerId) {
 }
 
 function makeConnection(connectingData) {
-    SOCKET = io.connect("http://localhost:3000");
+    SOCKET = io();//.connect("http://localhost:3000");
     if (connectingData.lobby === "onlinelobby") {
         IS_ONLINE_LOBBY = true;
     }
