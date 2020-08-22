@@ -11,7 +11,7 @@ const socket = require('socket.io');
 
 const io = socket(server);
 
-const MAX_ROUNDS = 1;
+const MAX_ROUNDS = 5;
 const MAX_CARDS_FOR_HAND = 3;
 const MAX_CARDS_FOR_ROUND = 15;
 
