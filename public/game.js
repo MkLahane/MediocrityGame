@@ -308,10 +308,9 @@ function makeConnection(connectingData) {
         }
 
         setTimeout(() => {
-            changeWinText("hands", winnerId, 0);
+            changeWinText("hands", -1, 0);
             bringTheCardsBack();
             if (!roundWinnerData["gameOver"]) {
-
                 enablePlaying();
                 document.getElementById("round-complete").style.animation = "";
                 numberOfRoundsText.textContent = "Round " + ROUNDS_PASSED + " of 5";
@@ -443,12 +442,18 @@ function changeWinText(winType, winnerId, winCount) {
             document.getElementById("opponent-player-2-rounds-won").textContent = "Rounds Won:" + winCount;
         }
     } else if (winType === "hands") {
-        if (winnerId === PLAYER_ID) {
-            document.getElementById("current-player-hands-won").textContent = "Hands Won: " + winCount;
-        } else if (winnerId === OPPONENT_PLAYER_1_ID) {
-            document.getElementById("opponent-player-1-hands-won").textContent = "Hands Won: " + winCount;
+        if (winnerId == -1) {
+            document.getElementById("current-player-hands-won").textContent = "Hands Won: 0";
+            document.getElementById("opponent-player-1-hands-won").textContent = "Hands Won: 0";
+            document.getElementById("opponent-player-2-hands-won").textContent = "Hands Won: 0";
         } else {
-            document.getElementById("opponent-player-2-hands-won").textContent = "Hands Won: " + winCount;
+            if (winnerId === PLAYER_ID) {
+                document.getElementById("current-player-hands-won").textContent = "Hands Won: " + winCount;
+            } else if (winnerId === OPPONENT_PLAYER_1_ID) {
+                document.getElementById("opponent-player-1-hands-won").textContent = "Hands Won: " + winCount;
+            } else {
+                document.getElementById("opponent-player-2-hands-won").textContent = "Hands Won: " + winCount;
+            }
         }
     } else {
         //reset rounds 
